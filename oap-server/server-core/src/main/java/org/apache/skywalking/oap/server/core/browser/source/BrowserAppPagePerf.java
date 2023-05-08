@@ -40,7 +40,7 @@ public class BrowserAppPagePerf extends BrowserAppPerfSource {
     }
 
     @Getter
-    @ScopeDefaultColumn.DefinedByField(columnName = "service_id")
+    @ScopeDefaultColumn.DefinedByField(columnName = "service_id", groupByCondInTopN = true)
     private String serviceId;
     @Getter
     @Setter
@@ -49,6 +49,6 @@ public class BrowserAppPagePerf extends BrowserAppPerfSource {
 
     @Override
     public void prepare() {
-        serviceId = IDManager.ServiceID.buildId(serviceName, nodeType);
+        serviceId = IDManager.ServiceID.buildId(serviceName, true);
     }
 }

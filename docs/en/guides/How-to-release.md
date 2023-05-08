@@ -45,7 +45,7 @@ This step is only for testing purpose. If your env is correctly set, you don't n
 ## Prepare for the release
 ```
 ./mvnw release:clean
-./mvnw release:prepare -DautoVersionSubmodules=true -Pall
+./mvnw release:prepare -DautoVersionSubmodules=true -Darguments='-Dmaven.test.skip' -Pall
 ```
 
 - Set version number as x.y.z, and tag as **v**x.y.z (The version tag must start with **v**. You will find out why this is necessary in the next step.)
@@ -54,7 +54,7 @@ _You could do a GPG signature before preparing for the release. If you need to i
 
 ## Stage the release 
 ```
-./mvnw release:perform -DskipTests -Pall
+./mvnw release:perform -Darguments='-Dmaven.test.skip' -Pall
 ```
 
 - The release will be automatically inserted into a temporary staging repository.
@@ -92,7 +92,7 @@ if you haven't done it before.
     * Package name: `apache-skywalking-x.y.z-src.tar.gz`
     * See Section "Build and sign the source code package" for more details 
 1. Upload the distribution package to the folder with files ending with `.asc` and `.sha512`.
-    * Package name:  `apache-skywalking-bin-x.y.z.tar.gz` and `apache-skywalking-bin-x.y.z.zip`
+    * Package name:  `apache-skywalking-bin-x.y.z.tar.gz`.
     * See Section "Locate and download the distribution package in Apache Nexus Staging repositories" for more details.
     * Create a `.sha512` package: `shasum -a 512 file > file.sha512`
 
@@ -110,7 +110,7 @@ account if a quality vote is called for this build.
 
 Release notes:
 
- * https://github.com/apache/skywalking/blob/master/changes/changes-x.y.z.md
+ * https://github.com/apache/skywalking/blob/master/docs/en/changes/changes-x.y.z.md
 
 Release Candidate:
 
@@ -118,7 +118,6 @@ Release Candidate:
  * sha512 checksums
    - sha512xxxxyyyzzz apache-skywalking-apm-x.x.x-src.tgz
    - sha512xxxxyyyzzz apache-skywalking-apm-bin-x.x.x.tar.gz
-   - sha512xxxxyyyzzz apache-skywalking-apm-bin-x.x.x.zip
 
 Maven 2 staging repository:
 
@@ -126,13 +125,13 @@ Maven 2 staging repository:
 
 Release Tag :
 
- * (Git Tag) x.y.z
+ * (Git Tag) vx.y.z
 
 Release CommitID :
 
  * https://github.com/apache/skywalking/tree/(Git Commit ID)
  * Git submodule
-   * skywalking-ui: https://github.com/apache/skywalking-rocketbot-ui/tree/(Git Commit ID)
+   * skywalking-ui: https://github.com/apache/skywalking-booster-ui/tree/(Git Commit ID)
    * apm-protocol/apm-network/src/main/proto: https://github.com/apache/skywalking-data-collect-protocol/tree/(Git Commit ID)
    * oap-server/server-query-plugin/query-graphql-plugin/src/main/resources/query-protocol https://github.com/apache/skywalking-query-protocol/tree/(Git Commit ID)
 
@@ -142,7 +141,7 @@ Keys to verify the Release Candidate :
 
 Guide to build the release from source :
 
- * https://github.com/apache/skywalking/blob/x.y.z/docs/en/guides/How-to-build.md
+ * https://github.com/apache/skywalking/blob/vx.y.z/docs/en/guides/How-to-build.md
 
 A vote regarding the quality of this test build will be initiated
 within the next couple of days.
@@ -164,7 +163,7 @@ This is a call for vote to release Apache SkyWalking version x.y.z.
 
 Release notes:
 
- * https://github.com/apache/skywalking/blob/master/changes/changes-x.y.z.md
+ * https://github.com/apache/skywalking/blob/master/docs/en/changes/changes-x.y.z.md
 
 Release Candidate:
 
@@ -172,7 +171,6 @@ Release Candidate:
  * sha512 checksums
    - sha512xxxxyyyzzz apache-skywalking-apm-x.x.x-src.tgz
    - sha512xxxxyyyzzz apache-skywalking-apm-bin-x.x.x.tar.gz
-   - sha512xxxxyyyzzz apache-skywalking-apm-bin-x.x.x.zip
 
 Maven 2 staging repository:
 
@@ -180,13 +178,13 @@ Maven 2 staging repository:
 
 Release Tag :
 
- * (Git Tag) x.y.z
+ * (Git Tag) vx.y.z
 
 Release CommitID :
 
  * https://github.com/apache/skywalking/tree/(Git Commit ID)
  * Git submodule
-   * skywalking-ui: https://github.com/apache/skywalking-rocketbot-ui/tree/(Git Commit ID)
+   * skywalking-ui: https://github.com/apache/skywalking-booster-ui/tree/(Git Commit ID)
    * apm-protocol/apm-network/src/main/proto: https://github.com/apache/skywalking-data-collect-protocol/tree/(Git Commit ID)
    * oap-server/server-query-plugin/query-graphql-plugin/src/main/resources/query-protocol https://github.com/apache/skywalking-query-protocol/tree/(Git Commit ID)
 
@@ -196,7 +194,7 @@ Keys to verify the Release Candidate :
 
 Guide to build the release from source :
 
- * https://github.com/apache/skywalking/blob/x.y.z/docs/en/guides/How-to-build.md
+ * https://github.com/apache/skywalking/blob/vx.y.z/docs/en/guides/How-to-build.md
 
 Voting will start now (xxxx date) and will remain open for at least 72 hours, Request all PMC members to give their vote.
 [ ] +1 Release this package.
@@ -262,7 +260,7 @@ version a.b.c(last release). The notable changes since x.y.z include:
 3. ...
 
 Please refer to the change log for the complete list of changes:
-https://github.com/apache/skywalking/blob/master/changes/changes-x.y.z.md
+https://github.com/apache/skywalking/blob/master/docs/en/changes/changes-x.y.z.md
 
 Apache SkyWalking website:
 http://skywalking.apache.org/
@@ -280,6 +278,28 @@ SkyWalking Resources:
 
 
 - Apache SkyWalking Team
+```
+
+## Publish the Docker images
+
+We have a [GitHub workflow](../../../.github/workflows/publish-docker.yaml) to automatically publish the Docker images to
+Docker Hub after you set the version from `pre-release` to `release`, all you need to do is to watch that workflow and see
+whether it succeeds, if it fails, you can use the following steps to publish the Docker images in your local machine.
+
+```shell
+export SW_VERSION=x.y.z
+git clone --depth 1 --branch v$SW_VERSION https://github.com/apache/skywalking.git
+cd skywalking
+
+svn co https://dist.apache.org/repos/dist/release/skywalking/$SW_VERSION release # (1)
+
+export CONTEXT=release
+export HUB=apache
+export OAP_NAME=skywalking-oap-server
+export UI_NAME=skywalking-ui
+export TAG=$SW_VERSION
+export DIST=<the binary package name inside (1), e.g. apache-skywalking-apm-8.8.0.tar.gz>
+make docker.push
 ```
 
 ## Clean up the old releases
